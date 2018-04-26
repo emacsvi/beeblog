@@ -23,6 +23,7 @@
             <th>最后更新</th>
             <th>浏览</th>
             <th>回复数</th>
+            <th>最后评论</th>
             <th>操作</th>
         </tr>
         </thead>
@@ -34,6 +35,7 @@
             <th>{{.Updated}}</th>
             <th>{{.Views}}</th>
             <th>{{.ReplyCount}}</th>
+            <th>{{.ReplyTime}}</th>
             <th>
                 <a href="/topic/view/{{.Id}}">查看</a>
                 <a href="/topic/modify?tid={{.Id}}">修改</a>
