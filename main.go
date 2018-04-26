@@ -1,9 +1,9 @@
 package main
 
 import (
+	"beeblog/models"
 	_ "beeblog/routers"
 	"github.com/astaxie/beego"
-	"beeblog/models"
 	"github.com/astaxie/beego/orm"
 )
 

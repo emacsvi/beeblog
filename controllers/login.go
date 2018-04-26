@@ -28,7 +28,7 @@ func (l *LoginController) Post() {
 	if beego.AppConfig.String("uname") == uname && beego.AppConfig.String("pwd") == pwd {
 		maxAge := 0
 		if autoLogin {
-			maxAge = 1<<31-1
+			maxAge = 1<<31 - 1
 		}
 
 		l.Ctx.SetCookie("uname", uname, maxAge, "/")

@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"github.com/astaxie/beego"
 	"beeblog/models"
+	"github.com/astaxie/beego"
 )
 
 type CategoryController struct {
