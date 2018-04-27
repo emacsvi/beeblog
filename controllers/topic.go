@@ -3,6 +3,7 @@ package controllers
 import (
 	"beeblog/models"
 	"github.com/astaxie/beego"
+	"path"
 	"strings"
 )
 
@@ -33,13 +34,30 @@ func (t *TopicController) Post() {
 	category := t.Input().Get("category")
 	label := t.Input().Get("label")
 	tid := t.Input().Get("tid")
+
+	// 获取附件
+	_, fh, err := t.GetFile("attachment")
+	if err != nil {
+		beego.Error(err)
+	}
+
+	var attachment string
+	if fh != nil {
+		attachment = fh.Filename
+		beego.Info(attachment)
+		err = t.SaveToFile("attachment", path.Join("attachment", attachment))
+		if err != nil {
+			beego.Error(err)
+		}
+	}
+
 	if len(tid) == 0 {
-		err := models.AddTopic(title, category, label, content)
+		err := models.AddTopic(title, category, label, content, attachment)
 		if err != nil {
 			beego.Error(err)
 		}
 	} else {
-		err := models.ModifyTopic(tid, title, category, label, content)
+		err := models.ModifyTopic(tid, title, category, label, content, attachment)
 		if err != nil {
 			beego.Error(err)
 		}
@@ -59,6 +77,12 @@ func (t *TopicController) Add() {
 
 func (t *TopicController) View() {
 	t.Data["IsLogin"] = checkAccount(t.Ctx)
+	/*
+	reqUrl := t.Ctx.Request.RequestURI
+	i := strings.LastIndex(reqUrl, "/")
+	tid := reqUrl[i+1:]
+	*/
+
 	p := t.Ctx.Input.Params()
 	var tid string
 	if v, ok := p["0"]; !ok {

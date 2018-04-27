@@ -99,7 +99,7 @@ func DelCategory(id string) error {
 	return err
 }
 
-func AddTopic(title, category, label, content string) error {
+func AddTopic(title, category, label, content, attachment string) error {
 	label = "$" + strings.Join(strings.Split(label, " "), "#$") + "#"
 	o := orm.NewOrm()
 	t := &Topic{
@@ -107,6 +107,7 @@ func AddTopic(title, category, label, content string) error {
 		Category:  category,
 		Labels: label,
 		Content:   content,
+		Attachment:attachment,
 		Created:   time.Now(),
 		Updated:   time.Now(),
 		ReplyTime: time.Now(),
@@ -173,7 +174,7 @@ func GetTopic(tid string) (*Topic, error) {
 	return topic, err
 }
 
-func ModifyTopic(tid, title, category, label, content string) error {
+func ModifyTopic(tid, title, category, label, content, attachment string) error {
 	label = "$" + strings.Join(strings.Split(label, " "), "#$") + "#"
 	tidN, err := strconv.ParseInt(tid, 10, 64)
 	if err != nil {
@@ -181,11 +182,13 @@ func ModifyTopic(tid, title, category, label, content string) error {
 	}
 	o := orm.NewOrm()
 	t := &Topic{Id: tidN}
-	var oldCategory string
+	var oldCategory, oldAttachment string
 	if o.Read(t) == nil {
 		t.Title = title
 		oldCategory = t.Category
+		oldAttachment = t.Attachment
 		t.Category = category
+		t.Attachment = attachment
 		t.Labels = label
 		t.Content = content
 		t.Updated = time.Now()
@@ -207,6 +210,11 @@ func ModifyTopic(tid, title, category, label, content string) error {
 		if err != nil {
 			return err
 		}
+	}
+
+	// 删除旧的附件
+	if oldAttachment != "" {
+		os.Remove(path.Join("attachment", oldAttachment))
 	}
 
 	if category != "" {
